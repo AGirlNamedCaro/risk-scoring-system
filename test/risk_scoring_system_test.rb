@@ -19,5 +19,9 @@ class RiskScoringSystemTest < Minitest::Test
         assert_equal 18.0, risk_assessment[:factors][:longevity][:contribution]
         assert_equal 60.6, risk_assessment[:score]
         assert_equal "Medium Risk", risk_assessment[:tier]
+        assert_equal 3, risk_assessment[:explanation].size
+        assert_equal "Credit score below preferred threshold (69 vs 720+)", risk_assessment[:explanation][0]
+        assert_equal "Annual revenue meets minimum requirements", risk_assessment[:explanation][1]
+        assert_equal "Business longevity meets minimum requirements (36 months)", risk_assessment[:explanation][2] 
     end
 end
