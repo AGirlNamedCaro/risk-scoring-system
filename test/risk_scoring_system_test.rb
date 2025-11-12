@@ -17,5 +17,6 @@ class RiskScoringSystemTest < Minitest::Test
         assert_equal 60, risk_assessment[:factors][:longevity][:score]
         assert_equal 0.3, risk_assessment[:factors][:longevity][:weight]
         assert_equal 18.0, risk_assessment[:factors][:longevity][:contribution]
+        assert_equal 60.6, risk_assessment[:score]
     end
 end

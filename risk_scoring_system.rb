@@ -9,13 +9,16 @@ class RiskScoringSystem
     credit_score = calculate_credit_score
     revenue_score = calculate_revenue_score
     longevity_score = calculate_longevity_score
-    overall_score = get_overall_score(credit_score, revenue_score, longevity_score)
+    overall_score = calculate_overall_score(credit_score[:contribution], revenue_score[:contribution], longevity_score[:contribution])
 
-    { factors: {
-      credit: credit_score,
-      revenue: revenue_score,
-      longevity: longevity_score
-    } }
+    {
+      score: overall_score.round(1),
+      factors: {
+        credit: credit_score,
+        revenue: revenue_score,
+        longevity: longevity_score,
+      },
+    }
   end
 
   private
@@ -56,9 +59,9 @@ class RiskScoringSystem
     contribution = score * weight
 
     {
-        score: score.round,
-        weight: weight,
-        contribution: contribution.round(1),
+      score: score.round,
+      weight: weight,
+      contribution: contribution.round(1),
     }
   end
 
@@ -76,13 +79,13 @@ class RiskScoringSystem
     contribution = score * weight
 
     {
-        score: score.round,
-        weight: weight,
-        contribution: contribution.round(1),
+      score: score.round,
+      weight: weight,
+      contribution: contribution.round(1),
     }
   end
 
-  def get_overall_score(credit, revenue, longevity)
-
+  def calculate_overall_score(credit, revenue, longevity)
+    credit + revenue + longevity
   end
 end
