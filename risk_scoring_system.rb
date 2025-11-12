@@ -8,7 +8,7 @@ class RiskScoringSystem
   }
 
   def initialize(data)
-    @data = JSON.parse(data)
+    @data = validate_fields(JSON.parse(data))
   end
 
   def calculate_score
@@ -37,7 +37,6 @@ class RiskScoringSystem
 
   def calculate_credit_score
     credit_score = @data["credit_score"].to_f
-
     case credit_score
     when 0..300
       score = 0
@@ -48,6 +47,8 @@ class RiskScoringSystem
     when 720..850
       score = 100
       explanation = "Excellent credit score"
+    else
+      raise ArgumentError, "Invalid argument provided."
     end
 
     weight = 0.4
@@ -62,7 +63,7 @@ class RiskScoringSystem
   end
 
   def calculate_revenue_score
-    annual_revenue = @data["annual_revenue"]
+    annual_revenue = @data["annual_revenue"].to_f
 
     case annual_revenue
     when 0..999_999
@@ -75,6 +76,8 @@ class RiskScoringSystem
     when 1_000_000..Float::INFINITY
       score = 100
       explanation = "Strong annual revenue"
+    else
+      raise ArgumentError, "Invalid argument provided."
     end
 
     weight = 0.3
@@ -102,6 +105,8 @@ class RiskScoringSystem
     when 37..Float::INFINITY
       score = 100
       explanation = "Established business with strong longevity"
+    else
+      raise ArgumentError, "Invalid argument provided."
     end
 
     weight = 0.3
@@ -123,5 +128,23 @@ class RiskScoringSystem
     RISK_TIERS.each do |key, value|
       return value if key.include?(score)
     end
+  end
+
+  def validate_fields(parsed_data)
+    data = parsed_data.transform_keys(&:to_sym)
+
+    required_fields = %i[
+      credit_score
+      annual_revenue
+      months_in_business
+      industry
+    ]
+
+    missing_fields = required_fields.select { |field| data[field].nil? || data[field].to_s.strip.empty? }
+
+    unless missing_fields.empty?
+      raise ArgumentError, "Missing required fields: #{missing_fields.join(", ")}"
+    end
+    parsed_data
   end
 end
