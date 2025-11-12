@@ -1,6 +1,12 @@
 require "json"
 
 class RiskScoringSystem
+  RISK_TIERS = {
+    80..100 => "Low Risk",
+    50..79 => "Medium Risk",
+    0..49 => "High Risk",
+  }
+
   def initialize(data)
     @data = JSON.parse(data)
   end
@@ -10,9 +16,11 @@ class RiskScoringSystem
     revenue_score = calculate_revenue_score
     longevity_score = calculate_longevity_score
     overall_score = calculate_overall_score(credit_score[:contribution], revenue_score[:contribution], longevity_score[:contribution])
+    tier = get_tier(overall_score)
 
     {
       score: overall_score.round(1),
+      tier: tier,
       factors: {
         credit: credit_score,
         revenue: revenue_score,
@@ -87,5 +95,11 @@ class RiskScoringSystem
 
   def calculate_overall_score(credit, revenue, longevity)
     credit + revenue + longevity
+  end
+
+  def get_tier(score)
+    RISK_TIERS.each do |key, value|
+        return value if key.include?(score)
+    end
   end
 end
