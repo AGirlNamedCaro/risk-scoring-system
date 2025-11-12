@@ -8,10 +8,12 @@ class RiskScoringSystem
   def calculate_score
     credit_score = calculate_credit_score
     revenue_score = calculate_revenue_score
+    longevity_score = calculate_longevity_score
 
     { factors: {
       credit: credit_score,
       revenue: revenue_score,
+      longevity: longevity_score
     } }
   end
 
@@ -46,6 +48,26 @@ class RiskScoringSystem
     when 0..999_999
       score = (annual_revenue / 10_000)
     when 1_000_000..Float::INFINITY
+      score = 100
+    end
+
+    weight = 0.3
+    contribution = score * weight
+
+    {
+        score: score.round,
+        weight: weight,
+        contribution: contribution.round(1),
+    }
+  end
+
+  def calculate_longevity_score
+    months_in_business = @data["months_in_business"]
+
+    case months_in_business
+    when 0..35
+      score = (months_in_business / 60) * 100
+    when 36..Float::INFINITY
       score = 100
     end
 
