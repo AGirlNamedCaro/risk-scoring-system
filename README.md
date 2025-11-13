@@ -13,3 +13,8 @@ The catch: Scoring rules change frequently based on:
 
 ### Technology
 Ruby 3.4.5
+
+#### TO DO
+- Separate explanations for calculations
+- Split calculate score so that it's not too big and repetitive
+- Integrate multiple strategies i.e conservative, aggressive using the strategy pattern
